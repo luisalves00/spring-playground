@@ -1,0 +1,174 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE composition PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<ui:composition xmlns:ui="http://java.sun.com/jsf/facelets"
+                xmlns="http://www.w3.org/1999/xhtml"
+                xmlns:h="http://java.sun.com/jsf/html"
+                xmlns:f="http://java.sun.com/jsf/core"
+                xmlns:p="http://primefaces.org/ui"
+                template="./../../templates/masterLayout.xhtml">
+
+    <ui:define name="breadcrumb">
+        breadcrumb
+    </ui:define>
+
+    <ui:define name="container">
+        <h:panelGroup id="messagePanel" layout="block">
+            <h:messages errorStyle="color: red" infoStyle="color: green" layout="table"/>
+        </h:panelGroup>
+        <h1>Role Detail</h1>
+        <h:form>
+            <h:panelGrid columns="2">
+                <h:outputText value="Id:"/>
+                <h:outputText value="#{roleBean.role.id}" title="Id" />
+                <h:outputText value="Name:"/>
+                <h:outputText value="#{roleBean.role.name}" title="Name" />
+
+                <h:outputText value="PermissionCollection:" />
+                <h:panelGroup>
+                    <h:outputText rendered="#{empty role.role.permissionCollection}" value="(No Items)"/>
+                    <h:dataTable value="#{roleBean.role.permissionCollection}" var="item" 
+                                 border="0" cellpadding="2" cellspacing="0" rowClasses="jsfcrud_odd_row,jsfcrud_even_row" rules="all" style="border:solid 1px" 
+                                 rendered="#{not empty role.role.permissionCollection}">
+                        <h:column>
+                            <f:facet name="header">
+                                <h:outputText value="Id"/>
+                            </f:facet>
+                            <h:outputText value="#{item.id}"/>
+                        </h:column>
+                        <h:column>
+                            <f:facet name="header">
+                                <h:outputText value="Name"/>
+                            </f:facet>
+                            <h:outputText value="#{item.name}"/>
+                        </h:column>
+                        <h:column>
+                            <f:facet name="header">
+                                <h:outputText escape="false" value="&nbsp;"/>
+                            </f:facet>
+                            <h:commandLink value="Show" action="#{permission.detailSetup}">
+                                <f:param name="jsfcrud.currentRole" value="#{jsfcrud_class['com.lual.atmyexpense.bean.authorization.util.JsfUtil'].jsfcrud_method['getAsConvertedString'][role.role][role.converter].jsfcrud_invoke}"/>
+                                <f:param name="jsfcrud.currentPermission" value="#{jsfcrud_class['com.lual.atmyexpense.bean.authorization.util.JsfUtil'].jsfcrud_method['getAsConvertedString'][item][permission.converter].jsfcrud_invoke}"/>
+                                <f:param name="jsfcrud.relatedController" value="role" />
+                                <f:param name="jsfcrud.relatedControllerType" value="com.lual.atmyexpense.bean.authorization.RoleController" />
+                            </h:commandLink>
+                            <h:outputText value=" "/>
+                            <h:commandLink value="Edit" action="#{permission.editSetup}">
+                                <f:param name="jsfcrud.currentRole" value="#{jsfcrud_class['com.lual.atmyexpense.bean.authorization.util.JsfUtil'].jsfcrud_method['getAsConvertedString'][role.role][role.converter].jsfcrud_invoke}"/>
+                                <f:param name="jsfcrud.currentPermission" value="#{jsfcrud_class['com.lual.atmyexpense.bean.authorization.util.JsfUtil'].jsfcrud_method['getAsConvertedString'][item][permission.converter].jsfcrud_invoke}"/>
+                                <f:param name="jsfcrud.relatedController" value="role" />
+                                <f:param name="jsfcrud.relatedControllerType" value="com.lual.atmyexpense.bean.authorization.RoleController" />
+                            </h:commandLink>
+                            <h:outputText value=" "/>
+                            <h:commandLink value="Destroy" action="#{permission.destroy}">
+                                <f:param name="jsfcrud.currentRole" value="#{jsfcrud_class['com.lual.atmyexpense.bean.authorization.util.JsfUtil'].jsfcrud_method['getAsConvertedString'][role.role][role.converter].jsfcrud_invoke}"/>
+                                <f:param name="jsfcrud.currentPermission" value="#{jsfcrud_class['com.lual.atmyexpense.bean.authorization.util.JsfUtil'].jsfcrud_method['getAsConvertedString'][item][permission.converter].jsfcrud_invoke}"/>
+                                <f:param name="jsfcrud.relatedController" value="role" />
+                                <f:param name="jsfcrud.relatedControllerType" value="com.lual.atmyexpense.bean.authorization.RoleController" />
+                            </h:commandLink>
+                        </h:column>
+                    </h:dataTable>
+                </h:panelGroup>
+                <h:outputText value="UserCollection:" />
+                <h:panelGroup>
+                    <h:outputText rendered="#{empty role.role.userCollection}" value="(No Items)"/>
+                    <h:dataTable value="#{roleBean.role.userCollection}" var="item" 
+                                 border="0" cellpadding="2" cellspacing="0" rowClasses="jsfcrud_odd_row,jsfcrud_even_row" rules="all" style="border:solid 1px" 
+                                 rendered="#{not empty role.role.userCollection}">
+                        <h:column>
+                            <f:facet name="header">
+                                <h:outputText value="Id"/>
+                            </f:facet>
+                            <h:outputText value="#{item.id}"/>
+                        </h:column>
+                        <h:column>
+                            <f:facet name="header">
+                                <h:outputText value="Email"/>
+                            </f:facet>
+                            <h:outputText value="#{item.email}"/>
+                        </h:column>
+                        <h:column>
+                            <f:facet name="header">
+                                <h:outputText value="Locale"/>
+                            </f:facet>
+                            <h:outputText value="#{item.locale}"/>
+                        </h:column>
+                        <h:column>
+                            <f:facet name="header">
+                                <h:outputText value="FirstName"/>
+                            </f:facet>
+                            <h:outputText value="#{item.firstName}"/>
+                        </h:column>
+                        <h:column>
+                            <f:facet name="header">
+                                <h:outputText value="LastName"/>
+                            </f:facet>
+                            <h:outputText value="#{item.lastName}"/>
+                        </h:column>
+                        <h:column>
+                            <f:facet name="header">
+                                <h:outputText value="Password"/>
+                            </f:facet>
+                            <h:outputText value="#{item.password}"/>
+                        </h:column>
+                        <h:column>
+                            <f:facet name="header">
+                                <h:outputText value="Salt"/>
+                            </f:facet>
+                            <h:outputText value="#{item.salt}"/>
+                        </h:column>
+                        <h:column>
+                            <f:facet name="header">
+                                <h:outputText value="Enabled"/>
+                            </f:facet>
+                            <h:outputText value="#{item.enabled}"/>
+                        </h:column>
+                        <h:column>
+                            <f:facet name="header">
+                                <h:outputText escape="false" value="&nbsp;"/>
+                            </f:facet>
+                            <h:commandLink value="Show" action="#{user.detailSetup}">
+                                <f:param name="jsfcrud.currentRole" value="#{jsfcrud_class['com.lual.atmyexpense.bean.authorization.util.JsfUtil'].jsfcrud_method['getAsConvertedString'][role.role][role.converter].jsfcrud_invoke}"/>
+                                <f:param name="jsfcrud.currentUser" value="#{jsfcrud_class['com.lual.atmyexpense.bean.authorization.util.JsfUtil'].jsfcrud_method['getAsConvertedString'][item][user.converter].jsfcrud_invoke}"/>
+                                <f:param name="jsfcrud.relatedController" value="role" />
+                                <f:param name="jsfcrud.relatedControllerType" value="com.lual.atmyexpense.bean.authorization.RoleController" />
+                            </h:commandLink>
+                            <h:outputText value=" "/>
+                            <h:commandLink value="Edit" action="#{user.editSetup}">
+                                <f:param name="jsfcrud.currentRole" value="#{jsfcrud_class['com.lual.atmyexpense.bean.authorization.util.JsfUtil'].jsfcrud_method['getAsConvertedString'][role.role][role.converter].jsfcrud_invoke}"/>
+                                <f:param name="jsfcrud.currentUser" value="#{jsfcrud_class['com.lual.atmyexpense.bean.authorization.util.JsfUtil'].jsfcrud_method['getAsConvertedString'][item][user.converter].jsfcrud_invoke}"/>
+                                <f:param name="jsfcrud.relatedController" value="role" />
+                                <f:param name="jsfcrud.relatedControllerType" value="com.lual.atmyexpense.bean.authorization.RoleController" />
+                            </h:commandLink>
+                            <h:outputText value=" "/>
+                            <h:commandLink value="Destroy" action="#{user.destroy}">
+                                <f:param name="jsfcrud.currentRole" value="#{jsfcrud_class['com.lual.atmyexpense.bean.authorization.util.JsfUtil'].jsfcrud_method['getAsConvertedString'][role.role][role.converter].jsfcrud_invoke}"/>
+                                <f:param name="jsfcrud.currentUser" value="#{jsfcrud_class['com.lual.atmyexpense.bean.authorization.util.JsfUtil'].jsfcrud_method['getAsConvertedString'][item][user.converter].jsfcrud_invoke}"/>
+                                <f:param name="jsfcrud.relatedController" value="role" />
+                                <f:param name="jsfcrud.relatedControllerType" value="com.lual.atmyexpense.bean.authorization.RoleController" />
+                            </h:commandLink>
+                        </h:column>
+                    </h:dataTable>
+                </h:panelGroup>
+
+            </h:panelGrid>
+            <br />
+            <h:commandLink action="#{roleBean.destroy}" value="Destroy">
+                <f:param name="jsfcrud.currentRole" value="#{jsfcrud_class['com.lual.atmyexpense.bean.authorization.util.JsfUtil'].jsfcrud_method['getAsConvertedString'][role.role][role.converter].jsfcrud_invoke}" />
+            </h:commandLink>
+            <br />
+            <br />
+            <h:commandLink action="#{roleBean.editSetup}" value="Edit">
+                <f:param name="jsfcrud.currentRole" value="#{jsfcrud_class['com.lual.atmyexpense.bean.authorization.util.JsfUtil'].jsfcrud_method['getAsConvertedString'][role.role][role.converter].jsfcrud_invoke}" />
+            </h:commandLink>
+            <br />
+            <h:commandLink action="#{roleBean.createSetup}" value="New Role" />
+            <br />
+            <h:commandLink action="#{roleBean.listSetup}" value="Show All Role Items"/>
+            <br />
+            <br />
+            <h:commandLink value="Index" action="welcome" immediate="true" />
+
+        </h:form>
+    </ui:define>
+
+</ui:composition>

@@ -1,0 +1,46 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE composition PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<ui:composition xmlns:ui="http://java.sun.com/jsf/facelets"
+                xmlns="http://www.w3.org/1999/xhtml"
+                xmlns:h="http://java.sun.com/jsf/html"
+                xmlns:f="http://java.sun.com/jsf/core"
+                xmlns:p="http://primefaces.org/ui"
+                template="./../../templates/masterLayout.xhtml">
+
+    <ui:define name="breadcrumb">
+        breadcrumb
+    </ui:define>
+
+    <ui:define name="container">
+        <h:panelGroup id="messagePanel" layout="block">
+            <h:messages errorStyle="color: red" infoStyle="color: green" layout="table"/>
+        </h:panelGroup>
+        <h1>New Role</h1>
+        <h:form>
+            <h:inputHidden id="validateCreateField" validator="#{roleBean.validateCreate}" value="value"/>
+            <h:panelGrid columns="2">
+                <h:outputText value="Name:"/>
+                <h:inputText id="name" value="#{roleBean.role.name}" title="Name" required="true" requiredMessage="The name field is required." />
+                <h:outputText value="PermissionCollection:"/>
+                <p:selectManyMenu id="permissionCollection" value="#{roleBean.role.permissionCollection}" label="PermissionCollection" converter="#{permission.converter}" >
+                    <f:selectItems value="#{permission.permissionItemsAvailableSelectMany}"/>
+                </p:selectManyMenu>
+                <h:outputText value="UserCollection:"/>
+                <p:selectManyMenu id="userCollection" value="#{roleBean.role.userCollection}" label="UserCollection" converter="#{user.converter}" >
+                    <f:selectItems value="#{user.userItemsAvailableSelectMany}"/>
+                </p:selectManyMenu>
+
+            </h:panelGrid>
+            <br />
+            <h:commandLink action="#{roleBean.create}" value="Create"/>
+            <br />
+            <br />
+            <h:commandLink action="#{roleBean.listSetup}" value="Show All Role Items" immediate="true"/>
+            <br />
+            <br />
+            <h:commandLink value="Index" action="welcome" immediate="true" />
+
+        </h:form>
+    </ui:define>
+
+</ui:composition>

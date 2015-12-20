@@ -1,0 +1,19 @@
+/* FIX AUTOCOMPLETE BUTTON*/
+
+.ui-autocomplete .ui-button {
+    height: 2em;
+    margin-top: -0.3em;
+    vertical-align: middle;
+}
+
+.locale-drop-down .ui-autocomplete-input{
+    width: 19em !important;
+}
+
+.input-name{
+    width: 19em;
+}
+
+.input-email{
+    width: 19em;
+}

@@ -1,0 +1,62 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE composition PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<ui:composition xmlns:ui="http://java.sun.com/jsf/facelets"
+                xmlns="http://www.w3.org/1999/xhtml"
+                xmlns:h="http://java.sun.com/jsf/html"
+                xmlns:f="http://java.sun.com/jsf/core"
+                xmlns:p="http://primefaces.org/ui"
+                xmlns:pe="http://primefaces.org/ui/extensions"
+                template="./../../templates/masterLayout.xhtml">
+
+    <ui:define name="container">
+        <h:panelGroup id="messagePanel" layout="block">
+            <p:messages autoUpdate="true" />
+        </h:panelGroup>
+        <h1>#{msg.logging_list_header}</h1>
+        <h:form id="log-form">
+            <p:dataTable id="log-table" value="#{loggingBean.loggingEvents}" var="item"  
+                         rowKey="#{item.eventId}" rowsPerPageTemplate="10,25,50" styleClass="container"
+                         paginatorTemplate="{CurrentPageReport} {FirstPageLink} {PreviousPageLink} {PageLinks} {NextPageLink} {LastPageLink} {RowsPerPageDropdown}"  
+                         paginator="true" paginatorPosition="bottom" resizableColumns="true"
+                         rows="15" emptyMessage="#{msg.logging_list_empty}">
+                <p:column sortBy="#{item.timestmp}" filterBy="#{item.timestmp}" id="timestamp"> 
+                    <f:facet name="header" >
+                        <h:outputText value="#{msg.logging_list_timestamp}"/>
+                    </f:facet>
+                    <h:outputText value="#{item.timestmp}">
+                        <f:convertDateTime dateStyle="short" 
+                                           timeStyle="short" type="both" />
+                    </h:outputText>
+
+                </p:column>
+                <p:column sortBy="#{item.formattedMessage}" filterBy="#{item.formattedMessage}" id="formatted-msg">
+                    <f:facet name="header">
+                        <h:outputText value="#{msg.logging_list_msg}"/>
+                    </f:facet>
+                    <h:outputText value="#{item.formattedMessage}"/>
+                </p:column>
+                <p:column  sortBy="#{item.loggerName}" filterBy="#{item.loggerName}" id="logger-name">
+                    <f:facet name="header">
+                        <h:outputText value="#{msg.logging_list_logger_name}"/>
+                    </f:facet>
+                    <h:outputText value="#{item.loggerName}"/>
+                </p:column>
+                <p:column sortBy="#{item.levelString}" filterBy="#{item.levelString}" id="level-string">
+                    <f:facet name="header">
+                         <h:outputText value="#{msg.logging_list_level}"/>
+                    </f:facet>
+                    <h:outputText value="#{item.levelString}"/>
+                </p:column>
+                <p:column sortBy="#{item.threadName}" filterBy="#{item.threadName}" id="thread-name">
+                    <f:facet name="header">
+                        <h:outputText value="#{msg.logging_list_thread}"/>
+                    </f:facet>
+                    <h:outputText value="#{item.threadName}"/>
+                </p:column>
+
+            </p:dataTable>
+
+        </h:form>
+    </ui:define>
+
+</ui:composition>

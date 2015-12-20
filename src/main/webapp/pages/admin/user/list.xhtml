@@ -1,0 +1,102 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE composition PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<ui:composition xmlns:ui="http://java.sun.com/jsf/facelets"
+                xmlns="http://www.w3.org/1999/xhtml"
+                xmlns:h="http://java.sun.com/jsf/html"
+                xmlns:f="http://java.sun.com/jsf/core"
+                xmlns:p="http://primefaces.org/ui"
+                xmlns:pe="http://primefaces.org/ui/extensions"
+                template="./../../templates/masterLayout.xhtml">
+
+    <ui:define name="container">
+        <h:panelGroup id="messagePanel" layout="block">
+            <h:messages errorStyle="color: red" infoStyle="color: green" layout="table"/>
+        </h:panelGroup>
+        <h1>Listing User Items</h1>
+        <h:form styleClass="jsfcrud_list_form">
+            <h:outputText escape="false" value="(No User Items Found)&lt;br /&gt;" rendered="#{userBean.pagingInfo.itemCount == 0}" />
+            <h:panelGroup rendered="#{userBean.pagingInfo.itemCount gt 0}">
+                <h:outputText value="Item #{userBean.pagingInfo.firstItem + 1}..#{userBean.pagingInfo.lastItem} of #{userBean.pagingInfo.itemCount}"/>&nbsp;
+                <h:commandLink action="#{userBean.prev}" value="Previous #{userBean.pagingInfo.batchSize}" rendered="#{userBean.pagingInfo.firstItem ge user.pagingInfo.batchSize}"/>&nbsp;
+                <h:commandLink action="#{userBean.next}" value="Next #{userBean.pagingInfo.batchSize}" rendered="#{userBean.pagingInfo.lastItem + user.pagingInfo.batchSize le user.pagingInfo.itemCount}"/>&nbsp;
+                <h:commandLink action="#{userBean.next}" value="Remaining #{userBean.pagingInfo.itemCount - user.pagingInfo.lastItem}"
+                               rendered="#{userBean.pagingInfo.lastItem lt user.pagingInfo.itemCount and user.pagingInfo.lastItem + user.pagingInfo.batchSize gt user.pagingInfo.itemCount}"/>
+                <h:dataTable value="#{userBean.userItems}" var="item" border="0" cellpadding="2" cellspacing="0" rowClasses="jsfcrud_odd_row,jsfcrud_even_row" rules="all" style="border:solid 1px">
+                    <h:column>
+                        <f:facet name="header">
+                            <h:outputText value="Id"/>
+                        </f:facet>
+                        <h:outputText value="#{item.id}"/>
+                    </h:column>
+                    <h:column>
+                        <f:facet name="header">
+                            <h:outputText value="Email"/>
+                        </f:facet>
+                        <h:outputText value="#{item.email}"/>
+                    </h:column>
+                    <h:column>
+                        <f:facet name="header">
+                            <h:outputText value="Locale"/>
+                        </f:facet>
+                        <h:outputText value="#{item.locale}"/>
+                    </h:column>
+                    <h:column>
+                        <f:facet name="header">
+                            <h:outputText value="FirstName"/>
+                        </f:facet>
+                        <h:outputText value="#{item.firstName}"/>
+                    </h:column>
+                    <h:column>
+                        <f:facet name="header">
+                            <h:outputText value="LastName"/>
+                        </f:facet>
+                        <h:outputText value="#{item.lastName}"/>
+                    </h:column>
+                    <h:column>
+                        <f:facet name="header">
+                            <h:outputText value="Password"/>
+                        </f:facet>
+                        <h:outputText value="#{item.password}"/>
+                    </h:column>
+                    <h:column>
+                        <f:facet name="header">
+                            <h:outputText value="Salt"/>
+                        </f:facet>
+                        <h:outputText value="#{item.salt}"/>
+                    </h:column>
+                    <h:column>
+                        <f:facet name="header">
+                            <h:outputText value="Enabled"/>
+                        </f:facet>
+                        <h:outputText value="#{item.enabled}"/>
+                    </h:column>
+                    <h:column>
+                        <f:facet name="header">
+                            <h:outputText escape="false" value="&nbsp;"/>
+                        </f:facet>
+                        <h:commandLink value="Show" action="#{userBean.detailSetup}">
+                            <f:param name="jsfcrud.currentUser" value="#{jsfcrud_class['com.lual.atmyexpense.bean.authorization.util.JsfUtil'].jsfcrud_method['getAsConvertedString'][item][user.converter].jsfcrud_invoke}"/>
+                        </h:commandLink>
+                        <h:outputText value=" "/>
+                        <h:commandLink value="Edit" action="#{userBean.editSetup}">
+                            <f:param name="jsfcrud.currentUser" value="#{jsfcrud_class['com.lual.atmyexpense.bean.authorization.util.JsfUtil'].jsfcrud_method['getAsConvertedString'][item][user.converter].jsfcrud_invoke}"/>
+                        </h:commandLink>
+                        <h:outputText value=" "/>
+                        <h:commandLink value="Destroy" action="#{userBean.destroy}">
+                            <f:param name="jsfcrud.currentUser" value="#{jsfcrud_class['com.lual.atmyexpense.bean.authorization.util.JsfUtil'].jsfcrud_method['getAsConvertedString'][item][user.converter].jsfcrud_invoke}"/>
+                        </h:commandLink>
+                    </h:column>
+
+                </h:dataTable>
+            </h:panelGroup>
+            <br />
+            <h:commandLink action="#{userBean.createSetup}" value="New User"/>
+            <br />
+            <br />
+            <h:commandLink value="Index" action="welcome" immediate="true" />
+
+
+        </h:form>
+    </ui:define>
+
+</ui:composition>

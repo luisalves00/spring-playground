@@ -1,0 +1,75 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<beans:beans xmlns="http://www.springframework.org/schema/security"
+    xmlns:beans="http://www.springframework.org/schema/beans"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-4.1.xsd
+    http://www.springframework.org/schema/security http://www.springframework.org/schema/security/spring-security-4.0.xsd">
+      
+    <global-method-security 
+        secured-annotations="enabled">
+    </global-method-security>
+    
+    <!--
+    <http>
+        <intercept-url pattern="/**" access="permitAll" />
+        <form-login />
+    </http>
+    -->
+
+    <http authentication-manager-ref="authenticationManager"
+        auto-config="true" >
+            
+        <intercept-url
+            pattern="/pages/admin**"
+            access="ROLE_ADMIN" />
+        <intercept-url
+            pattern="/pages/secured**" 
+            access="ROLE_USER" />
+        <intercept-url
+            pattern="/**"
+            access="IS_AUTHENTICATED_ANONYMOUSLY" />
+
+        <form-login
+            login-processing-url="/j_spring_security_check"
+            login-page="/pages/public/login.xhtml"
+            default-target-url="/"
+            authentication-failure-url="/pages/public/login.xhtml" />
+        <logout
+            logout-url="/logout*"
+            logout-success-url="/" />
+        <session-management>
+            <concurrency-control max-sessions="1" error-if-maximum-exceeded="true" />
+        </session-management>
+    </http>
+
+
+    <beans:bean id="loggerListener"
+		class="org.springframework.security.access.event.LoggerListener" />
+   
+    <!-- Specify the property of the User object to obtain a salt from. -->  
+    <beans:bean id="saltSource"
+          class="org.springframework.security.authentication.dao.ReflectionSaltSource"/>
+        
+    <beans:bean id="passwordEncoder" 
+          class="org.springframework.security.authentication.encoding.ShaPasswordEncoder">
+        <beans:constructor-arg value="256"/>
+    </beans:bean>
+
+    <beans:bean id="daoAuthenticationProvider"
+          class="org.springframework.security.authentication.dao.DaoAuthenticationProvider">
+        <beans:property name="userDetailsService" ref="userService"/>
+        <beans:property name="saltSource" ref="saltSource"/>
+        <beans:property name="passwordEncoder" ref="passwordEncoder"/>
+    </beans:bean>    
+        
+    <beans:bean id="authenticationManager"
+		class="org.springframework.security.authentication.ProviderManager">
+        <beans:property name="providers">
+            <beans:list>
+                <beans:ref bean="daoAuthenticationProvider" />
+            </beans:list>
+        </beans:property>
+    </beans:bean>
+    
+</beans:beans> 

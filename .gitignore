@@ -1,0 +1,6 @@
+.classpath
+.project
+*.NavData
+.setting
+.metadata
+target

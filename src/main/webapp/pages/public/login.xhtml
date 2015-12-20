@@ -1,0 +1,40 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE composition PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<ui:composition xmlns:ui="http://java.sun.com/jsf/facelets"
+                xmlns="http://www.w3.org/1999/xhtml"
+                xmlns:h="http://java.sun.com/jsf/html"
+                xmlns:f="http://java.sun.com/jsf/core"
+                xmlns:p="http://primefaces.org/ui"
+                xmlns:pe="http://primefaces.org/ui/extensions"
+                template="./../../templates/masterLayout.xhtml">
+
+    <ui:define name="container">
+        <h:form
+            id="loginForm" prependId="false" >
+            <h:panelGrid columns="2">
+                
+            <h:outputLabel value="#{msg.login_username}:" for="j_username"/>
+            <p:inputText id="j_username" required="true" value="#{loginBean.user.username}">
+            </p:inputText>
+
+          
+            <h:outputLabel value="#{msg.login_password}:" for="j_password"/>
+            <p:password id="j_password" required="true" value="#{loginBean.user.password}">
+            </p:password>
+
+            <h:outputLabel  value="#{msg.login_remember_me}:" for="_spring_security_remember_me" />
+            <p:selectBooleanCheckbox
+                id="_spring_security_remember_me" value="#{loginBean.user.rememberMe}"/>
+
+            </h:panelGrid>
+            
+            <p:commandButton ajax="false"
+                type="submit"
+                id="login-btn" 
+                action="#{loginBean.doLogin}"
+                value="#{msg.login_log_in_btn}" />
+
+        </h:form>
+    </ui:define>
+
+</ui:composition>

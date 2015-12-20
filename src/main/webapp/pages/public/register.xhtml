@@ -1,0 +1,68 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE composition PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<ui:composition xmlns:ui="http://java.sun.com/jsf/facelets"
+                xmlns="http://www.w3.org/1999/xhtml"
+                xmlns:h="http://java.sun.com/jsf/html"
+                xmlns:f="http://java.sun.com/jsf/core"
+                xmlns:p="http://primefaces.org/ui"
+                xmlns:pe="http://primefaces.org/ui/extensions"
+                xmlns:fn="http://java.sun.com/jsp/jstl/functions"
+                template="./../../templates/masterLayout.xhtml">
+
+    <ui:define name="container">
+        <p:messages id="messages" showDetail="true"/>  
+  
+        <h:form
+            id="loginForm">
+            <h:panelGrid columns="2">
+            
+            <h:outputLabel value="#{msg.first_name}: *" for="first-name"/>
+            <p:inputText id="first-name" required="true" value="#{registerBean.user.firstName}" styleClass="input-name"
+                         label="#{msg.first_name}">
+            </p:inputText>   
+            
+            <h:outputLabel value="#{msg.last_name}: *" for="last-name"/>
+            <p:inputText id="last-name" required="true" value="#{registerBean.user.lastName}" styleClass="input-name" 
+                         label="#{msg.last_name}">
+            </p:inputText> 
+            
+            <h:outputLabel value="#{msg.locale}: *" for="locale"/>
+            <p:autoComplete id="locale" required="true" value="#{registerBean.locale}" completeMethod="#{localeBean.complete}" label="#{msg.locale}"      
+                            scrollHeight="200" effect="fade"  converter="locale" forceSelection="true" styleClass="locale-drop-down"
+                        var="l" itemLabel=" #{l.getDisplayName(facesContext.viewRoot.locale)}" itemValue="#{l}" dropdown="true" >  
+                <p:column>  
+                    <div class="flag flag-#{fn:toLowerCase(l.country)}" />                             
+                </p:column>  
+                <p:column>  
+                    #{l.getDisplayName(facesContext.viewRoot.locale)}  
+                </p:column>  
+            </p:autoComplete>  
+                
+            <h:outputLabel value="#{msg.login_username}: *" for="j_username"/>
+            <p:inputText id="j_username" required="true" value="#{registerBean.user.email}" styleClass="input-email"
+                         label="#{msg.login_username}">
+            </p:inputText>
+
+            <h:outputLabel value="#{msg.login_password}: *" for="j_password"/>
+            <p:password id="j_password" required="true" value="#{registerBean.password}"
+                        feedback="true"
+                        match="j_password_re_enter" label="#{msg.login_password}">
+            </p:password>
+            
+            <h:outputLabel value="#{msg.login_password_re_enter}: *" for="j_password_re_enter"/>
+            <p:password id="j_password_re_enter" required="true" value="#{registerBean.reEnterPassword}"
+                        label="#{msg.login_password_re_enter}">
+            </p:password>
+
+            </h:panelGrid>
+            
+            <p:commandButton ajax="false"
+                type="submit"
+                id="login-btn" 
+                action="#{registerBean.register}"
+                value="#{msg.register_btn}" />
+
+        </h:form>
+    </ui:define>
+
+</ui:composition>

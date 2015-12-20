@@ -1,0 +1,194 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+       xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:aop="http://www.springframework.org/schema/aop"
+       xmlns:tx="http://www.springframework.org/schema/tx" xmlns:context="http://www.springframework.org/schema/context"
+       xmlns:util="http://www.springframework.org/schema/util"
+       xmlns:p="http://www.springframework.org/schema/p"
+       xsi:schemaLocation="http://www.springframework.org/schema/beans
+            http://www.springframework.org/schema/beans/spring-beans-3.0.xsd
+            http://www.springframework.org/schema/context
+            http://www.springframework.org/schema/context/spring-context-2.5.xsd
+            http://www.springframework.org/schema/tx
+            http://www.springframework.org/schema/tx/spring-tx-2.5.xsd
+            http://www.springframework.org/schema/aop
+            http://www.springframework.org/schema/aop/spring-aop-2.5.xsd
+            http://www.springframework.org/schema/util http://www.springframework.org/schema/util/spring-util-3.1.xsd">
+
+    <context:spring-configured />        
+
+    <!-- enables config with annotations -->
+    <context:annotation-config />
+    
+    <context:load-time-weaver aspectj-weaving="autodetect" weaver-class="org.springframework.instrument.classloading.ReflectiveLoadTimeWeaver" />
+    <!--  <context:load-time-weaver aspectj-weaving="on" /> -->
+
+    <!-- defines where spring lookup for the project beans -->
+    <context:component-scan base-package="com.la" />
+    
+    <!-- Load in application properties reference -->
+    <bean id="applicationProperties" class="org.springframework.beans.factory.config.PropertyPlaceholderConfigurer">
+        <property name="location" value="classpath:application.properties"/>
+    </bean>
+    
+    <!-- jtaDataSource -->
+    <bean id="jtaDataSource" class="com.atomikos.jdbc.AtomikosDataSourceBean" 
+          init-method="init"  destroy-method="close" lazy-init="false">
+        <property name="uniqueResourceName" value="SpringPlaygroundDS" />
+        <property name="xaDataSourceClassName" value="com.mysql.jdbc.jdbc2.optional.MysqlXADataSource" />
+        <property name="xaProperties">
+            <props>
+                <prop key="URL">${db.url}</prop>
+                <prop key="user">${db.user}</prop>
+                <prop key="password">${db.password}</prop>
+                <prop key="pinGlobalTxToPhysicalConnection">${db.pinGlobalTxToPhysicalConnection}</prop>
+                <!-- <prop key="autoReconnect">true</prop> -->
+            </props>
+        </property>
+        <property name="maxPoolSize" value="50" />
+        <property name="minPoolSize" value="20" />
+        <property name="borrowConnectionTimeout" value="30000" />
+        <property name="testQuery" value="SELECT 1 FROM user" />    
+    </bean>
+    
+    <!-- Jpa Vendor Adapter Definition-->
+    <bean id="jpaVendorAdapter" class="org.springframework.orm.jpa.vendor.HibernateJpaVendorAdapter">
+        <property name="databasePlatform" value="org.eclipse.persistence.platform.database.MySQLPlatform" />
+        <property name="generateDdl" value="true" />
+        <property name="showSql" value="true" />
+    </bean>
+
+    <!-- Entity Manager Definition-->
+    <bean id="entityManagerFactory" class="org.springframework.orm.jpa.LocalContainerEntityManagerFactoryBean">
+        <property name="dataSource" ref="jtaDataSource" />
+        <property name="jpaVendorAdapter" ref="jpaVendorAdapter" />
+        <property name="jpaDialect">
+            <bean class="org.springframework.orm.jpa.vendor.EclipseLinkJpaDialect" />
+        </property>
+        <property name="persistenceProvider">
+            <bean class="org.eclipse.persistence.jpa.PersistenceProvider" />
+        </property>
+        <property name="persistenceXmlLocation" value="META-INF/persistence.xml" />
+        <property name="persistenceUnitName" value="SpringPlayground" />
+        <property name="loadTimeWeaver">
+            <bean class="org.springframework.instrument.classloading.ReflectiveLoadTimeWeaver"/>
+        </property>
+        <!--  
+        <property name="jpaProperties">
+        </property>
+        -->
+    </bean>
+    
+    <!-- Optional: add a log administrator --> 
+    <!--
+    <bean id="localLogAdministrator"  
+          class="com.atomikos.icatch.admin.imp.LocalLogAdministrator"/> 
+    -->
+    
+    <bean id="userTransactionService"  
+          class="com.atomikos.icatch.config.UserTransactionServiceImp"  
+          init-method="init" destroy-method="shutdownForce" depends-on="setSystemPropsBean"> 
+        <constructor-arg> 
+            <!-- IMPORTANT: specify all Atomikos properties here --> 
+            <props> 
+                <!-- Note: the following property is setted on setSystemPropsBean -->
+                <prop key="com.atomikos.icatch.service">com.atomikos.icatch.standalone.UserTransactionServiceFactory</prop>
+                <prop key="com.atomikos.icatch.serial_jta_transactions">false</prop>
+                <prop key="com.atomikos.icatch.enable_logging">true</prop>
+                <prop key="com.atomikos.icatch.console_log_level">DEBUG</prop> 
+            </props> 
+        </constructor-arg> 
+        
+        <!-- 
+        <property name="initialLogAdministrators"> 
+            <list> 
+                <ref bean="localLogAdministrator"/> 
+            </list> 
+        </property>  
+        -->
+    </bean> 
+ 
+    <!--  
+     Construct Atomikos UserTransactionManager,  
+     needed to configure Spring  
+    --> 
+    <bean id="AtomikosTransactionManager"  
+          class="com.atomikos.icatch.jta.UserTransactionManager"  
+          init-method="init" destroy-method="close"  
+          depends-on="userTransactionService"> 
+ 
+        <!-- IMPORTANT: disable startup because the userTransactionService above does this --> 
+        <property name="startupTransactionService" value="false"/> 
+ 
+        <!--   
+            when close is called,  
+            should we force transactions to terminate or not?  
+        --> 
+        <property name="forceShutdown" value="false" /> 
+    </bean> 
+ 
+    <!--  
+        Also use Atomikos UserTransactionImp,  
+        needed to configure Spring   
+    -->  
+  
+    <bean id="AtomikosUserTransaction"  
+          class="com.atomikos.icatch.jta.UserTransactionImp"   
+          depends-on="userTransactionService"> 
+        <property name="transactionTimeout" value="300" /> 
+    </bean>
+ 
+    <!--  
+        Configure the Spring framework to use JTA transactions from Atomikos   
+    --> 
+    <bean id="TransactionManager"  
+          class="org.springframework.transaction.jta.JtaTransactionManager"  
+          depends-on="userTransactionService"> 
+        <property name="transactionManager" ref="AtomikosTransactionManager" /> 
+        <property name="userTransaction" ref="AtomikosUserTransaction" />
+        <property name="transactionSynchronizationName" value="SYNCHRONIZATION_ON_ACTUAL_TRANSACTION" />
+        <property name="allowCustomIsolationLevels" value="true" />
+    </bean> 
+    
+    <!-- Set the following system properties
+         -Dcom.atomikos.icatch.no_file=true 
+         -Dcom.atomikos.icatch.service=com.atomikos.icatch.standalone.UserTransactionServiceFactory  
+         -Dorg.apache.el.parser.COERCE_TO_ZERO=false 
+    -->
+    <bean id="setSystemPropsBean"
+      class="org.springframework.beans.factory.config.MethodInvokingFactoryBean">
+        <property name="targetObject"> 
+            <bean class="org.springframework.beans.factory.config.MethodInvokingFactoryBean">
+                <property name="targetClass" value="java.lang.System" />
+                <property name="targetMethod" value="getProperties" />
+            </bean>
+        </property>
+        <property name="targetMethod" value="putAll" />
+        <property name="arguments">
+            <util:properties>
+                <prop key="com.atomikos.icatch.no_file">true</prop>
+                <prop key="com.atomikos.icatch.service">com.atomikos.icatch.standalone.UserTransactionServiceFactory</prop>
+                <prop key="org.apache.el.parser.COERCE_TO_ZERO">false</prop>
+            </util:properties>
+        </property>
+    </bean>
+    
+
+    <bean class="org.springframework.orm.jpa.support.PersistenceAnnotationBeanPostProcessor"/>
+
+    <tx:annotation-driven transaction-manager="TransactionManager" mode="aspectj" />
+    
+    <!-- <tx:jta-transaction-manager /> -->
+
+    
+    <!-- View scope @see http://cagataycivici.wordpress.com/2010/02/17/port-jsf-2-0s-viewscope-to-spring-3-0/ -->
+    <bean class="org.springframework.beans.factory.config.CustomScopeConfigurer">
+        <property name="scopes">
+            <map>
+                <entry key="view">
+                    <bean class="com.la.springplayground.bean.scope.ViewScope" />
+                </entry>
+            </map>
+        </property>
+    </bean>
+
+</beans>

@@ -1,0 +1,66 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE composition PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<ui:composition xmlns:ui="http://java.sun.com/jsf/facelets"
+                xmlns="http://www.w3.org/1999/xhtml"
+                xmlns:h="http://java.sun.com/jsf/html"
+                xmlns:f="http://java.sun.com/jsf/core"
+                xmlns:p="http://primefaces.org/ui"
+                xmlns:pe="http://primefaces.org/ui/extensions"
+                template="./../../templates/masterLayout.xhtml">
+
+    <ui:define name="container">
+        <h:panelGroup id="messagePanel" layout="block">
+            <h:messages errorStyle="color: red" infoStyle="color: green" layout="table"/>
+        </h:panelGroup>
+        <h1>Listing Role Items</h1>
+        <h:form styleClass="jsfcrud_list_form">
+            <h:outputText escape="false" value="(No Role Items Found)<br />" rendered="#{roleBean.pagingInfo.itemCount == 0}" />
+            <h:panelGroup rendered="#{roleBean.pagingInfo.itemCount > 0}">
+                <h:outputText value="Item #{roleBean.pagingInfo.firstItem + 1}..#{roleBean.pagingInfo.lastItem} of #{roleBean.pagingInfo.itemCount}"/>&nbsp;
+                <h:commandLink action="#{roleBean.prev}" value="Previous #{roleBean.pagingInfo.batchSize}" rendered="#{roleBean.pagingInfo.firstItem >= role.pagingInfo.batchSize}"/>&nbsp;
+                <h:commandLink action="#{roleBean.next}" value="Next #{roleBean.pagingInfo.batchSize}" rendered="#{roleBean.pagingInfo.lastItem + role.pagingInfo.batchSize <= role.pagingInfo.itemCount}"/>&nbsp;
+                <h:commandLink action="#{roleBean.next}" value="Remaining #{roleBean.pagingInfo.itemCount - role.pagingInfo.lastItem}"
+                               rendered="#{roleBean.pagingInfo.lastItem < role.pagingInfo.itemCount && role.pagingInfo.lastItem + role.pagingInfo.batchSize > role.pagingInfo.itemCount}"/>
+                <h:dataTable value="#{roleBean.roleItems}" var="item" border="0" cellpadding="2" cellspacing="0" rowClasses="jsfcrud_odd_row,jsfcrud_even_row" rules="all" style="border:solid 1px">
+                    <h:column>
+                        <f:facet name="header">
+                            <h:outputText value="Id"/>
+                        </f:facet>
+                        <h:outputText value="#{item.id}"/>
+                    </h:column>
+                    <h:column>
+                        <f:facet name="header">
+                            <h:outputText value="Name"/>
+                        </f:facet>
+                        <h:outputText value="#{item.name}"/>
+                    </h:column>
+                    <h:column>
+                        <f:facet name="header">
+                            <h:outputText escape="false" value="&nbsp;"/>
+                        </f:facet>
+                        <h:commandLink value="Show" action="#{roleBean.detailSetup}">
+                            <f:param name="jsfcrud.currentRole" value="#{jsfcrud_class['com.lual.atmyexpense.bean.authorization.util.JsfUtil'].jsfcrud_method['getAsConvertedString'][item][role.converter].jsfcrud_invoke}"/>
+                        </h:commandLink>
+                        <h:outputText value=" "/>
+                        <h:commandLink value="Edit" action="#{roleBean.editSetup}">
+                            <f:param name="jsfcrud.currentRole" value="#{jsfcrud_class['com.lual.atmyexpense.bean.authorization.util.JsfUtil'].jsfcrud_method['getAsConvertedString'][item][role.converter].jsfcrud_invoke}"/>
+                        </h:commandLink>
+                        <h:outputText value=" "/>
+                        <h:commandLink value="Destroy" action="#{roleBean.destroy}">
+                            <f:param name="jsfcrud.currentRole" value="#{jsfcrud_class['com.lual.atmyexpense.bean.authorization.util.JsfUtil'].jsfcrud_method['getAsConvertedString'][item][role.converter].jsfcrud_invoke}"/>
+                        </h:commandLink>
+                    </h:column>
+
+                </h:dataTable>
+            </h:panelGroup>
+            <br />
+            <h:commandLink action="#{roleBean.createSetup}" value="New Role"/>
+            <br />
+            <br />
+            <h:commandLink value="Index" action="welcome" immediate="true" />
+
+
+        </h:form>
+    </ui:define>
+
+</ui:composition>

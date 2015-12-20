@@ -1,0 +1,54 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE composition PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<ui:composition xmlns:ui="http://java.sun.com/jsf/facelets"
+                xmlns="http://www.w3.org/1999/xhtml"
+                xmlns:h="http://java.sun.com/jsf/html"
+                xmlns:f="http://java.sun.com/jsf/core"
+                xmlns:p="http://primefaces.org/ui"
+                template="./../../templates/masterLayout.xhtml">
+
+    <ui:define name="breadcrumb">
+        breadcrumb
+    </ui:define>
+
+    <ui:define name="container">
+        <h:panelGroup id="messagePanel" layout="block">
+            <h:messages errorStyle="color: red" infoStyle="color: green" layout="table"/>
+        </h:panelGroup>
+        <h1>New User</h1>
+        <h:form>
+            <h:inputHidden id="validateCreateField" validator="#{userBean.validateCreate}" value="value"/>
+            <h:panelGrid columns="2">   
+                <h:outputText value="Email:"/>
+                <h:inputText id="email" value="#{userBean.user.email}" title="Email" required="true" requiredMessage="The email field is required." />
+                <h:outputText value="Locale:"/>
+                <h:inputText id="locale" value="#{userBean.user.locale}" title="Locale" required="true" requiredMessage="The locale field is required." />
+                <h:outputText value="FirstName:"/>
+                <h:inputText id="firstName" value="#{userBean.user.firstName}" title="FirstName" required="true" requiredMessage="The firstName field is required." />
+                <h:outputText value="LastName:"/>
+                <h:inputText id="lastName" value="#{userBean.user.lastName}" title="LastName" required="true" requiredMessage="The lastName field is required." />
+                <h:outputText value="Password:"/>
+                <h:inputText id="password" value="#{userBean.user.password}" title="Password" required="true" requiredMessage="The password field is required." />
+                <h:outputText value="Salt:"/>
+                <h:inputText id="salt" value="#{userBean.user.salt}" title="Salt" required="true" requiredMessage="The salt field is required." />
+                <h:outputText value="Enabled:"/>
+                <h:inputText id="enabled" value="#{userBean.user.enabled}" title="Enabled" required="true" requiredMessage="The enabled field is required." />
+                <h:outputText value="RoleCollection:"/>
+                <p:selectManyButton id="roleCollection" value="#{userBean.user.roleCollection}" label="RoleCollection" converter="#{roleBean.converter}" >
+                    <f:selectItems value="#{roleBean.roleItemsAvailableSelectMany}" />
+                </p:selectManyButton>
+
+            </h:panelGrid>
+            <br />
+            <h:commandLink action="#{userBean.create}" value="Create"/>
+            <br />
+            <br />
+            <h:commandLink action="#{userBean.listSetup}" value="Show All User Items" immediate="true"/>
+            <br />
+            <br />
+            <h:commandLink value="Index" action="welcome" immediate="true" />
+
+        </h:form>
+    </ui:define>
+
+</ui:composition>
